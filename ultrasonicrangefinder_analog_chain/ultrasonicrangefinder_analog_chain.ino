@@ -8,7 +8,7 @@
 
 #define ESP8266_PLATFORM
 
-int distx1,distx2,basex1,basex2;
+int distY1,distY2,baseY1,baseY2;
 int sum = 0;
 const int trpin = 5;//digital pin D1 for transmission start
 const int s2 = 13;
@@ -24,8 +24,8 @@ const char *sf_securityToken = "PdYqfjS9H9PT0q2ZZSVN9XLl";
 */
 const char *m2x_deviceId = "ccb067846803721b9ee611f650a9c9e2";
 const char *m2x_key = "09ca7139261330fca25a584f24caa278";
-const char *m2x_stream_x1 = "ProximityX1";
-const char *m2x_stream_x2 = "ProximityX2";
+const char *m2x_stream_Y1 = "ProximityY1";
+const char *m2x_stream_Y2 = "ProximityY2";
 
 char ssid[]     = "NetComm 0005";                     
 char password[] = "Secazusuko";
@@ -100,7 +100,7 @@ int  success = m2xClient.connect();
   digitalWrite(trpin, HIGH);
   delay(20);
   digitalWrite(trpin, LOW);
-  //Obtain baseline x1
+  //Obtain baseline Y1
   digitalWrite(s2, LOW);
   digitalWrite(s1, LOW);
   digitalWrite(s0, LOW);
@@ -108,11 +108,11 @@ int  success = m2xClient.connect();
   sum+= (analogRead(A0)/2)*2.54;
   delay(100);
   }
-  basex1 = sum/10;
+  baseY1 = sum/10;
   sum = 0;
-  Serial.print("Baseline for x1:");
-  Serial.println(basex1);
-  //Obtain baseline x2
+  Serial.print("Baseline for Y1:");
+  Serial.println(baseY1);
+  //Obtain baseline Y2
   digitalWrite(s2, LOW);
   digitalWrite(s1, LOW);
   digitalWrite(s0, HIGH);
@@ -120,20 +120,20 @@ int  success = m2xClient.connect();
   sum+= (analogRead(A0)/2)*2.54;  
   delay(100);
   }
-  basex2 = sum/10;
+  baseY2 = sum/10;
   sum = 0;
-  Serial.print("Baseline for x2:");
-  Serial.println(basex2);
+  Serial.print("Baseline for Y2:");
+  Serial.println(baseY2);
   delay(250);
 }
 
-void setupbasex1(){
+void setupbaseY1(){
   sum=0;
   //Initiate Ranging
   digitalWrite(trpin, HIGH);
   delay(20);
   digitalWrite(trpin, LOW);
-  //Obtain new baseline x1
+  //Obtain new baseline Y1
   digitalWrite(s2, LOW);
   digitalWrite(s1, LOW);
   digitalWrite(s0, LOW);
@@ -141,19 +141,19 @@ void setupbasex1(){
   sum+= (analogRead(A0)/2)*2.54;
   delay(100);
   }
-  basex1 = sum/10;
+  baseY1 = sum/10;
   sum = 0;
-  Serial.print("New Baseline for x1:");
-  Serial.println(basex1);
+  Serial.print("New Baseline for Y1:");
+  Serial.println(baseY1);
 }
 
-void setupbasex2(){
+void setupbaseY2(){
   sum=0;
   //Initiate Ranging
   digitalWrite(trpin, HIGH);
   delay(20);
   digitalWrite(trpin, LOW);
-  //Obtain new baseline x2
+  //Obtain new baseline Y2
   digitalWrite(s2, LOW);
   digitalWrite(s1, LOW);
   digitalWrite(s0, HIGH);
@@ -161,10 +161,10 @@ void setupbasex2(){
   sum+= (analogRead(A0)/2)*2.54;
   delay(100);
   }
-  basex2 = sum/10;
+  baseY2 = sum/10;
   sum = 0;
-  Serial.print("New Baseline for x2:");
-  Serial.println(basex2);
+  Serial.print("New Baseline for Y2:");
+  Serial.println(baseY2);
 }
 
 
@@ -174,37 +174,37 @@ void loop(){
   delay(20);
   digitalWrite(trpin, LOW);
   
-//Measure from sensor x1
+//Measure from sensor Y1
   digitalWrite(s2, LOW);
   digitalWrite(s1, LOW);
   digitalWrite(s0, LOW);
-  distx1 = (analogRead(A0)/2)*2.54;
-  if (distx1<0.9*basex1 || distx1>1.1*basex1){
+  distY1 = (analogRead(A0)/2)*2.54;
+  if (distY1<0.9*baseY1 || distY1>1.1*baseY1){
     Serial.print("Someone is...");
-      Serial.print(distx1);
-      Serial.println("(cm) away in X1.");
-      int response = m2xClient.updateStreamValue(m2x_deviceId, m2x_stream_x1, distx1);
-      setupbasex1();
+      Serial.print(distY1);
+      Serial.println("(cm) away in Y1.");
+      int response = m2xClient.updateStreamValue(m2x_deviceId, m2x_stream_Y1, distY1);
+      setupbaseY1();
   }
 
-//Measure from sensor x2
+//Measure from sensor Y2
   digitalWrite(s2, LOW);
   digitalWrite(s1, LOW);
   digitalWrite(s0, HIGH);
-   distx2 = (analogRead(A0)/2)*2.54;
-    if (distx2<0.9*basex2 || distx2>1.1*basex2){
+   distY2 = (analogRead(A0)/2)*2.54;
+    if (distY2<0.9*baseY2 || distY2>1.1*baseY2){
     Serial.print("Someone is...");
-      Serial.print(distx2);
-      Serial.println("(cm) away in X2.");
-      int response = m2xClient.updateStreamValue(m2x_deviceId, m2x_stream_x2, distx2);
-      setupbasex2();
+      Serial.print(distY2);
+      Serial.println("(cm) away in Y2.");
+      int response = m2xClient.updateStreamValue(m2x_deviceId, m2x_stream_Y2, distY2);
+      setupbaseY2();
   }
 
-  Serial.print("Distance for x1:");
-  Serial.print(distx1);
+  Serial.print("Distance for Y1:");
+  Serial.print(distY1);
   Serial.print("....");
-  Serial.print("Distance for x2:");
-  Serial.println(distx2);
+  Serial.print("Distance for Y2:");
+  Serial.println(distY2);
 
 
   
