@@ -27,8 +27,8 @@ const char *m2x_key = "09ca7139261330fca25a584f24caa278";
 const char *m2x_stream_Y1 = "ProximityY1";
 const char *m2x_stream_Y2 = "ProximityY2";
 
-char ssid[]     = "NetComm 0005";                     
-char password[] = "Secazusuko";
+char ssid[]     = "ATT8TLP9th";                     
+char password[] = "6ivu87rj%u#2";
 
 WiFiClient client;
 M2XClient m2xClient(&client, m2x_key);
